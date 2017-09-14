@@ -338,6 +338,14 @@ open class Chart: UIControl {
                     drawArea(scaledXValues, yValues: scaledYValues, seriesIndex: index)
                 }
             })
+            
+            for i in 0..<series.callouts.count {
+                let callout = series.callouts[i]
+                let scaledXValue = scaleValuesOnXAxis([series.data[callout].x])[0]
+                let scaledYValue = scaleValuesOnYAxis([series.data[callout].y])[0]
+                
+                drawCallout(x: scaledXValue, y: scaledYValue, seriesIndex: index)
+            }
         }
 
         drawAxes()
@@ -513,6 +521,29 @@ open class Chart: UIControl {
         layerStore.append(areaLayer)
     }
 
+    fileprivate func drawCallout(x: Float, y: Float, seriesIndex: Int) {
+        let isAboveZeroLine = y <= self.scaleValueOnYAxis(series[seriesIndex].colors.zeroLevel)
+        let frame = CGRect(x: CGFloat(x - 4.0), y: CGFloat(y - 4.0), width: 8.0, height: 8.0)
+        let area = CGPath(ellipseIn: frame, transform: nil)
+        
+        let areaLayer = CAShapeLayer()
+        areaLayer.frame = self.bounds
+        areaLayer.path = area
+        areaLayer.strokeColor = nil
+        if isAboveZeroLine {
+            areaLayer.strokeColor = series[seriesIndex].colors.above.cgColor
+            areaLayer.fillColor = series[seriesIndex].colors.above.withAlphaComponent(areaAlphaComponent / 2.0).cgColor
+        } else {
+            areaLayer.strokeColor = series[seriesIndex].colors.below.cgColor
+            areaLayer.fillColor = series[seriesIndex].colors.below.withAlphaComponent(areaAlphaComponent / 2.0).cgColor
+        }
+        areaLayer.lineWidth = lineWidth
+        
+        self.layer.addSublayer(areaLayer)
+        
+        layerStore.append(areaLayer)
+    }
+    
     fileprivate func drawAxes() {
 
         let context = UIGraphicsGetCurrentContext()!

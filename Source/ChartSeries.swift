@@ -12,6 +12,7 @@ Represent a series to draw in the line chart. Each series is defined with a data
 */
 open class ChartSeries {
     open var data: [(x: Float, y: Float)]
+    open var callouts: [Int] = []
     open var area: Bool = false
     open var line: Bool = true
     open var color: UIColor = ChartColors.blueColor() {
