@@ -15,6 +15,7 @@ open class ChartSeries {
     open var callouts: [Int] = []
     open var area: Bool = false
     open var line: Bool = true
+    open var lineWidth : CGFloat?
     open var color: UIColor = ChartColors.blueColor() {
         didSet {
             colors = (above: color, below: color, 0)

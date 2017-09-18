@@ -486,7 +486,7 @@ open class Chart: UIControl {
             lineLayer.strokeColor = series[seriesIndex].colors.below.cgColor
         }
         lineLayer.fillColor = nil
-        lineLayer.lineWidth = lineWidth
+        lineLayer.lineWidth = series[seriesIndex].lineWidth ?? lineWidth
         lineLayer.lineJoin = kCALineJoinBevel
 
         self.layer.addSublayer(lineLayer)
@@ -537,7 +537,7 @@ open class Chart: UIControl {
             areaLayer.strokeColor = series[seriesIndex].colors.below.cgColor
             areaLayer.fillColor = series[seriesIndex].colors.below.withAlphaComponent(areaAlphaComponent / 2.0).cgColor
         }
-        areaLayer.lineWidth = lineWidth
+        areaLayer.lineWidth = series[seriesIndex].lineWidth ?? lineWidth
         
         self.layer.addSublayer(areaLayer)
         
