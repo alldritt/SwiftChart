@@ -67,6 +67,16 @@ open class Chart: UIControl {
         }
     }
 
+	/**
+	Chart title
+	*/
+    @IBInspectable
+    open var title = "" {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
     /**
     The values to display as labels on the x-axis. You can format these values  with the `xLabelFormatter` attribute. 
     As default, it will display the values of the series which has the most data.
@@ -356,7 +366,9 @@ open class Chart: UIControl {
         if showYLabelsAndGrid && (yLabels != nil || series.count > 0) {
             drawLabelsAndGridOnYAxis()
         }
-
+        if title != "" {
+            drawTitle()
+        }
     }
 
     // MARK: - Scaling
@@ -714,6 +726,27 @@ open class Chart: UIControl {
 
     }
 
+    fileprivate func drawTitle() {
+        let padding: CGFloat = 5
+        let label = UILabel()
+        label.font = labelFont
+        label.text = title
+        label.textColor = labelColor
+        label.sizeToFit()
+        
+        if yLabelsOnRightSide {
+            label.frame.origin.x = padding
+        }
+        else {
+            label.frame.origin.x = drawingWidth
+            label.frame.origin.x -= label.frame.width + padding
+        }
+        
+        label.frame.origin.y = topInset - label.frame.size.height
+        
+        addSubview(label)
+    }
+    
     // MARK: - Touch events
 
     fileprivate func drawHighlightLineFromLeftPosition(_ left: CGFloat) {
