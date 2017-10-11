@@ -730,6 +730,10 @@ open class Chart: UIControl {
 
             // Labels should be placed above the horizontal grid
             label.frame.origin.y -= label.frame.height
+            // ...but within the chart's frame...
+            if label.frame.origin.y < 0.0 {
+                label.frame.origin.y = 0.0
+            }
 
             self.addSubview(label)
 
@@ -755,7 +759,12 @@ open class Chart: UIControl {
             label.frame.origin.x -= label.frame.width + padding
         }
         
+        // Labels should be placed above the horizontal grid
         label.frame.origin.y = topInset - label.frame.size.height
+        // ...but within the chart's frame...
+        if label.frame.origin.y < 0.0 {
+            label.frame.origin.y = 0.0
+        }
         
         addSubview(label)
     }
