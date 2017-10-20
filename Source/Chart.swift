@@ -364,10 +364,38 @@ open class Chart: UIControl {
             
             for i in 0..<series.callouts.count {
                 let callout = series.callouts[i]
-                let scaledXValue = scaleValuesOnXAxis([series.data[callout].x])[0]
-                let scaledYValue = scaleValuesOnYAxis([series.data[callout].y])[0]
+                let scaledXValue = scaleValuesOnXAxis([series.data[callout.x].x])[0]
+                let scaledYValue = scaleValuesOnYAxis([series.data[callout.x].y])[0]
                 
-                drawCallout(x: scaledXValue, y: scaledYValue, seriesIndex: index)
+                drawCallout(x: scaledXValue, y: scaledYValue, seriesIndex: index, callout: callout)
+                
+                if callout.title != nil && callout.title! != "" {
+                    // Add label
+                    let label = UILabel()
+                    label.font = labelFont
+                    label.text = callout.title
+                    label.textColor = callout.titleColor ?? (callout.strokeColor ?? labelColor)
+                    
+                    // Set label size
+                    label.sizeToFit()
+                    // Center label vertically
+                    
+                    switch callout.kind {
+                    case .circle, .square:
+                        label.frame.origin.x = CGFloat(scaledXValue) + 6.0
+                        label.frame.origin.y = CGFloat(scaledYValue) + label.frame.height / 2.0
+                        
+                    case .line, .lineTop:
+                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 2.0
+                        label.frame.origin.y = topInset
+                        
+                    case .lineBottom:
+                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 2.0
+                        label.frame.origin.y = topInset + drawingHeight - label.frame.height
+                    }
+                    
+                    self.addSubview(label)
+                }
             }
         }
 
@@ -546,23 +574,28 @@ open class Chart: UIControl {
         layerStore.append(areaLayer)
     }
 
-    fileprivate func drawCallout(x: Float, y: Float, seriesIndex: Int) {
+    fileprivate func drawCallout(x: Float, y: Float, seriesIndex: Int, callout: ChartCallout) {
         let isAboveZeroLine = y <= self.scaleValueOnYAxis(series[seriesIndex].colors.zeroLevel)
-        let frame = CGRect(x: CGFloat(x - 4.0), y: CGFloat(y - 4.0), width: 8.0, height: 8.0)
-        let area = CGPath(ellipseIn: frame, transform: nil)
+        var area: CGPath
+            
+        switch callout.kind {
+        case .circle: area = CGPath(ellipseIn: CGRect(x: CGFloat(x - 4.0), y: CGFloat(y - 4.0), width: 8.0, height: 8.0), transform: nil)
+        case .square: area = CGPath(rect: CGRect(x: CGFloat(x - 4.0), y: CGFloat(y - 4.0), width: 8.0, height: 8.0), transform: nil)
+        case .line, .lineTop, .lineBottom: area = CGPath(rect: CGRect(x: CGFloat(x), y: topInset, width: 0.5, height: drawingHeight), transform: nil)
+        }
         
         let areaLayer = CAShapeLayer()
         areaLayer.frame = self.bounds
         areaLayer.path = area
         areaLayer.strokeColor = nil
         if isAboveZeroLine {
-            areaLayer.strokeColor = series[seriesIndex].colors.above.cgColor
-            areaLayer.fillColor = series[seriesIndex].colors.above.withAlphaComponent(areaAlphaComponent / 2.0).cgColor
+            areaLayer.strokeColor = (callout.strokeColor ?? series[seriesIndex].colors.above).cgColor
+            areaLayer.fillColor = (callout.fillColor ?? series[seriesIndex].colors.above.withAlphaComponent(areaAlphaComponent / 2.0)).cgColor
         } else {
-            areaLayer.strokeColor = series[seriesIndex].colors.below.cgColor
-            areaLayer.fillColor = series[seriesIndex].colors.below.withAlphaComponent(areaAlphaComponent / 2.0).cgColor
+            areaLayer.strokeColor = (callout.strokeColor ?? series[seriesIndex].colors.below).cgColor
+            areaLayer.fillColor = (callout.fillColor ?? series[seriesIndex].colors.below.withAlphaComponent(areaAlphaComponent / 2.0)).cgColor
         }
-        areaLayer.lineWidth = series[seriesIndex].lineWidth ?? lineWidth
+        areaLayer.lineWidth = callout.lineWidth ?? (series[seriesIndex].lineWidth ?? lineWidth)
         
         self.layer.addSublayer(areaLayer)
         
