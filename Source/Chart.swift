@@ -382,15 +382,15 @@ open class Chart: UIControl {
                     
                     switch callout.kind {
                     case .circle, .square:
-                        label.frame.origin.x = CGFloat(scaledXValue) + 6.0
+                        label.frame.origin.x = CGFloat(scaledXValue) + 8.0
                         label.frame.origin.y = CGFloat(scaledYValue) + label.frame.height / 2.0
                         
                     case .line, .lineTop:
-                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 2.0
+                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 4.0
                         label.frame.origin.y = topInset
                         
                     case .lineBottom:
-                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 2.0
+                        label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 4.0
                         label.frame.origin.y = topInset + drawingHeight - label.frame.height
                     }
                     
