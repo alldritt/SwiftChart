@@ -375,6 +375,7 @@ open class Chart: UIControl {
                     label.font = labelFont
                     label.text = callout.title
                     label.textColor = callout.titleColor ?? (callout.strokeColor ?? labelColor)
+                    label.numberOfLines = 3
                     
                     // Set label size
                     label.sizeToFit()
@@ -383,7 +384,7 @@ open class Chart: UIControl {
                     switch callout.kind {
                     case .circle, .square:
                         label.frame.origin.x = CGFloat(scaledXValue) + 8.0
-                        label.frame.origin.y = CGFloat(scaledYValue) + label.frame.height / 2.0
+                        label.frame.origin.y = CGFloat(scaledYValue) - label.frame.height / 2.0
                         
                     case .line, .lineTop:
                         label.frame.origin.x = CGFloat(scaledXValue) + (callout.lineWidth ?? (series.lineWidth ?? lineWidth)) + 4.0
