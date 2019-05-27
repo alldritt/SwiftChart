@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SwiftChart"
-  s.version          = "0.5.0"
+  s.version          = "1.0.1"
   s.summary          = "Line and area chart library"
   s.description      = "Support multiple and partially filled series, signed floats, touch events."
   s.homepage         = "https://github.com/gpbl/SwiftChart"
@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/gpblv'
 
   s.platform     = :ios, '8.3'
+  s.swift_version = '5'
   s.requires_arc = true
 
   s.source_files = 'Source/*.swift'
